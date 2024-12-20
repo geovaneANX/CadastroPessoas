@@ -1,0 +1,11 @@
+*.dcu
+*.~*~
+*.local
+*.exe
+*.res
+*.identcache
+*.~dsk
+*.tvsconfig
+*.dsk
+*/__recovery/*
+*__recovery*
