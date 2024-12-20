@@ -11,19 +11,19 @@ type
   private
     class var FInstancia: TConfiguraBanco;
 
-  strict private
+  private
     FConexao: TFDConnection;
 
     class function GetInstancia: TConfiguraBanco; static;
 
     constructor Create();
-    destructor Destroy(); override;
 
   public
     property Conexao: TFDConnection read FConexao;
 
     class property Instancia: TConfiguraBanco read GetInstancia;
 
+    destructor Destroy(); override;
   end;
 
 implementation

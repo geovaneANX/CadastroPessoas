@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls, System.Net.HttpClient,
   System.JSON, DataSet.Serialize, FireDAC.Stan.StorageBin, FireDAC.Phys.Intf, FireDAC.DApt.Intf, Vcl.DBCtrls,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Buttons, FireDAC.Stan.Option,
-  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, Data.DB,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, Data.DB, System.UITypes,
   FireDAC.Stan.Intf, Vcl.Grids, Vcl.DBGrids;
 
 type
@@ -33,7 +33,6 @@ type
   private
     procedure FitColumns;
     procedure GetAll;
-    procedure GetPessoa(const Id: Integer);
     procedure DeletePessoa(const Id: Integer);
     procedure AtualizarPessoa(const JsonPessoa: TJSONObject; const Id: Integer);
     procedure InserirPessoa(const JsonPessoa: TJSONObject);
@@ -55,33 +54,6 @@ const
 implementation
 
 {$R *.dfm}
-
-
-procedure TfrmPrincipal.GetPessoa(const Id: Integer);
-var
-  httpClient: THTTPClient;
-  response: IHTTPResponse;
-  jsonResponse: TJSONObject;
-begin
-  httpClient := THTTPClient.Create;
-  httpClient.ConnectionTimeout := Integer.MaxValue;
-  httpClient.SendTimeout := Integer.MaxValue;
-  httpClient.ResponseTimeout := Integer.MaxValue;
-  try
-    response := httpClient.Get(Server_URL + Metodo + '/' + Id.ToString);
-
-    if response.StatusCode = 200 then
-    begin
-      jsonResponse := TJSONObject.ParseJSONValue(response.ContentAsString) as TJSONObject;
-      memPessoa.Close;
-      memPessoa.LoadFromJSON(jsonResponse);
-    end
-    else
-      raise Exception.Create('Erro ao buscar dados da API: ' + response.StatusText);
-  finally
-    httpClient.Free;
-  end;
-end;
 
 procedure TfrmPrincipal.InserirPessoa(const JsonPessoa: TJSONObject);
 var
@@ -251,7 +223,7 @@ begin
   end
   else if Button = nbPost then
   begin
-    var json: TJSONObject;
+    var json := TJSONObject.Create();
     json.AddPair('flnatureza', edtNatureza.Text);
     json.AddPair('dsdocumento', edtDocumento.Text);
     json.AddPair('nmprimeiro', edtPrimeiroNome.Text);
